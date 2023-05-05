@@ -1,0 +1,69 @@
+#include <stdio.h>
+
+#define MAX_PARTITIONS 10
+#define MAX_PROCESSES 10
+
+int main() {
+    int partitions[MAX_PARTITIONS];
+    int processes[MAX_PROCESSES];
+    int i, j, best_fit, partition_index, process_index;
+    int num_partitions, num_processes;
+
+    // initialize partitions and processes
+    partitions[0] = 300;
+    partitions[1] = 600;
+    partitions[2] = 350;
+    partitions[3] = 200;
+    partitions[4] = 750;
+    partitions[5] = 125;
+    num_partitions = 6;
+
+    processes[0] = 115;
+    processes[1] = 500;
+    processes[2] = 358;
+    processes[3] = 200;
+    processes[4] = 375;
+    num_processes = 5;
+
+    // print initial state of partitions and processes
+    printf("Initial state:\n");
+    printf("Partitions:\n");
+    for (i = 0; i < num_partitions; i++) {
+        printf("%d KB\n", partitions[i]);
+    }
+    printf("\nProcesses:\n");
+    for (i = 0; i < num_processes; i++) {
+        printf("%d KB\n", processes[i]);
+    }
+    printf("\n");
+
+    // allocate memory blocks to each process using best-fit algorithm
+    for (i = 0; i < num_processes; i++) {
+        best_fit = -1;
+        for (j = 0; j < num_partitions; j++) {
+            if (partitions[j] >= processes[i]) {
+                if (best_fit == -1 || partitions[j] < partitions[best_fit]) {
+                    best_fit = j;
+                }
+            }
+        }
+        if (best_fit != -1) {
+            partition_index = best_fit;
+            process_index = i;
+            printf("Process %d of size %d KB is allocated to partition %d of size %d KB.\n",
+                process_index+1, processes[process_index], partition_index+1, partitions[partition_index]);
+            partitions[partition_index] -= processes[process_index];
+        } else {
+            printf("Process %d of size %d KB cannot be allocated.\n", i+1, processes[i]);
+        }
+    }
+
+    // print final state of partitions
+    printf("\nFinal state:\n");
+    printf("Partitions:\n");
+    for (i = 0; i < num_partitions; i++) {
+        printf("%d KB\n", partitions[i]);
+    }
+
+    return 0;
+}
